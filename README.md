@@ -1,15 +1,16 @@
-# CFO Agent - Financial Control Agent
+# CFO Agent - Assistente Financeiro Pessoal com IA
 
 ## 📊 Problema Resolvido
 
-CEOs e fundadores de startups frequentemente enfrentam o desafio de tomar decisões financeiras críticas sem ter acesso rápido e inteligente aos dados financeiros da empresa. Analisar extratos, identificar padrões de gastos, entender o fluxo de caixa e otimizar custos são tarefas que consomem tempo valioso que poderia ser investido em crescimento estratégico.
+Profissionais em ascensão frequentemente enfrentam o desafio de controlar suas finanças pessoais de forma inteligente. Analisar extratos bancários, identificar padrões de gastos, entender para onde o dinheiro está indo e otimizar despesas são tarefas que consomem tempo e exigem disciplina.
 
 O **CFO Agent** resolve esse problema ao fornecer um assistente de IA especializado que:
-- Analisa transações financeiras em tempo real
-- Responde perguntas complexas sobre finanças usando linguagem natural
+- Analisa extratos bancários do **C6 Bank** automaticamente
+- Responde perguntas sobre suas finanças usando linguagem natural
+- Categoriza transações automaticamente (alimentação, transporte, lazer, etc.)
 - Identifica padrões e tendências nos gastos
-- Fornece insights acionáveis para otimização de custos
-- Oferece uma visão clara do cashflow e saúde financeira
+- Fornece insights para aumentar sua taxa de poupança
+- Diferencia transferências pessoais de pagamentos a empresas
 
 ## 🛠 Stack Utilizada
 
@@ -107,10 +108,29 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-2. **Gerar dados fictícios**:
-```bash
-python data_generator.py
+2. **Adicionar seu extrato C6 Bank**:
+
+O agente utiliza extratos do C6 Bank no formato CSV. Você pode exportar seu extrato diretamente do app C6.
+
+**Formato esperado do arquivo** (`backend/transacoesC6.csv`):
+```csv
+EXTRATO DE CONTA CORRENTE C6 BANK
+
+Agência: 1 / Conta: 123456789
+Extrato gerado em 20/01/2026 - as 17:33:57
+
+Extrato de 01/01/2025 a 20/01/2026
+
+
+Data Lançamento,Data Contábil,Título,Descrição,Entrada(R$),Saída(R$),Saldo do Dia(R$)
+02/01/2025,02/01/2025,Pix recebido de EMPRESA ABC,Pix recebido de EMPRESA ABC,3500.00,0.00,3500.00
+02/01/2025,02/01/2025,Pix enviado para SUPERMERCADO XYZ,TRANSF ENVIADA PIX,0.00,450.50,3049.50
+...
 ```
+
+> **📝 Nota**: Um arquivo de exemplo está disponível em `backend/transacoesC6_exemplo.csv` para referência.
+
+> **⚠️ Importante**: O arquivo `transacoesC6.csv` está no `.gitignore` por conter dados financeiros sensíveis. Nunca faça commit de seus dados reais!
 
 3. **Configurar variáveis de ambiente**:
 Crie um arquivo `.env` na raiz do projeto:
@@ -150,45 +170,81 @@ A aplicação estará disponível em `http://localhost:3000`
 
 ### Perguntas que o agente pode responder:
 
-1. **Análise de Categorias**:
-   - "Qual categoria tem o maior gasto?"
-   - "Quanto gastamos com Marketing nos últimos 3 meses?"
-   - "Compare os gastos de Cloud vs Software"
+1. **Análise de Gastos**:
+   - "Qual foi o total de gastos este mês?"
+   - "Quanto gastei com alimentação fora de casa?"
+   - "Quais são minhas maiores despesas?"
 
-2. **Análise Temporal**:
-   - "Qual foi o gasto total deste mês?"
-   - "Como está a tendência de gastos?"
-   - "Houve aumento nos custos de Cloud?"
+2. **Análise por Categoria**:
+   - "Divida meus gastos por categoria"
+   - "Quanto gastei com transporte?"
+   - "Compare gastos de restaurantes vs supermercado"
 
-3. **Insights e Recomendações**:
-   - "Dê um resumo do meu cashflow"
-   - "Quais são os principais gastos?"
-   - "Onde posso reduzir custos?"
+3. **Análise de Entradas**:
+   - "Qual foi o total de entradas no período?"
+   - "De onde vem minha renda?"
+   - "Qual minha taxa de poupança?"
 
-4. **Consultas Específicas**:
-   - "Qual foi o gasto total com cloud?"
-   - "Quantos salários foram pagos?"
-   - "Qual é o custo médio por transação?"
+4. **Transferências**:
+   - "Quanto enviei de Pix para amigos?"
+   - "Quais foram minhas transferências pessoais?"
+   - "Liste os pagamentos para empresas"
+
+5. **Insights Financeiros**:
+   - "Dê um resumo das minhas finanças"
+   - "Onde posso economizar?"
+   - "Meus gastos com alimentação estão altos?"
 
 ## 🏗️ Estrutura do Projeto
 
 ```
 FinanceControllerAgent/
 ├── backend/
-│   ├── data_generator.py      # Gera CSV com transações fictícias
-│   ├── main.py                 # FastAPI + LangChain Agent
-│   ├── requirements.txt        # Dependências Python
-│   └── transacoes.csv          # Dados financeiros (gerado)
+│   ├── domain/                      # Camada de Domínio (DDD)
+│   │   ├── entities.py              # Entidades (Transação, Categorias)
+│   │   └── categorizer.py           # Lógica de categorização
+│   ├── infrastructure/              # Camada de Infraestrutura
+│   │   └── csv_reader.py            # Leitor de CSV C6 Bank
+│   ├── application/                 # Camada de Aplicação
+│   │   └── financial_service.py     # Serviços de análise financeira
+│   ├── main.py                      # FastAPI + LangChain Agent
+│   ├── requirements.txt             # Dependências Python
+│   ├── transacoesC6.csv             # Seu extrato (não commitado)
+│   └── transacoesC6_exemplo.csv     # Exemplo de formato
 ├── frontend/
 │   ├── app/
-│   │   ├── api/chat/route.ts   # API route para proxy do FastAPI
-│   │   ├── page.tsx            # Interface principal de chat
-│   │   └── layout.tsx          # Layout base
+│   │   ├── api/
+│   │   │   ├── chat/route.ts        # API route para chat
+│   │   │   └── balance/route.ts     # API route para saldo
+│   │   ├── page.tsx                 # Interface principal
+│   │   └── layout.tsx               # Layout base
 │   ├── components/
-│   │   └── Sidebar.tsx         # Componente de saldo
+│   │   └── Sidebar.tsx              # Dashboard lateral
 │   └── package.json
+├── docker-compose.yml               # Orquestração de containers
 └── README.md
 ```
+
+## 📁 Categorias Automáticas
+
+O agente categoriza automaticamente suas transações em:
+
+| Categoria | Exemplos |
+|-----------|----------|
+| **Alimentação** | iFood, Uber Eats, lanchonetes, fast food |
+| **Restaurantes/Bares** | Restaurantes, bares, pubs, cafeterias |
+| **Supermercado** | Mercados, atacadões, hortifruti |
+| **Transporte** | Uber, 99, combustível, estacionamento |
+| **Saúde/Farmácia** | Farmácias, consultas, exames |
+| **Lazer/Entretenimento** | Cinema, shows, viagens, streaming |
+| **Compras** | Lojas, e-commerce, shopping |
+| **Serviços** | Barbearia, academia, lavanderia |
+| **Assinaturas/Apps** | Netflix, Spotify, apps |
+| **Tarifas Bancárias** | Tarifas, taxas, IOF |
+| **Transferência Pessoal** | Pix para amigos/família |
+| **Pix Enviado** | Pix para empresas |
+| **Pix Recebido** | Recebimentos via Pix |
+| **Saque** | Saques em caixas eletrônicos |
 
 ## 🔄 Fluxo de Dados
 
@@ -198,20 +254,37 @@ Usuário → Next.js API Route → FastAPI /chat → LangChain Agent → Pandas 
 Usuário vê streaming ← Next.js ← FastAPI Streaming ← LangChain Response ←
 ```
 
+## 🐳 Executando com Docker
+
+A forma mais fácil de executar o projeto é usando Docker:
+
+```bash
+# Configurar a chave da API Groq
+export GROQ_API_KEY=sua_chave_aqui  # Linux/Mac
+$env:GROQ_API_KEY="sua_chave_aqui"  # Windows PowerShell
+
+# Subir os containers
+docker-compose up --build
+```
+
+Acesse:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+
 ## 🎯 Próximos Passos
 
 Este é o MVP do CFO Agent. Futuras melhorias podem incluir:
-- Previsão de caixa usando modelos de ML
-- Integração com APIs bancárias reais
+- Suporte a extratos de outros bancos (Nubank, Itaú, etc.)
 - Dashboard com gráficos e visualizações
-- Alertas automáticos de anomalias
-- Suporte a múltiplas moedas
+- Metas de economia e alertas
+- Previsão de gastos usando ML
 - Exportação de relatórios em PDF
+- App mobile
 
 ## 📝 Licença
 
-Este projeto faz parte da CEO Stack - um ecossistema de agentes de IA para gestão empresarial.
+MIT License - Sinta-se livre para usar e modificar.
 
 ---
 
-**Desenvolvido com foco em eficiência, escalabilidade e decisões baseadas em dados.**
+**Desenvolvido para ajudar você a construir riqueza e ter controle total das suas finanças.**

@@ -14,8 +14,8 @@ services:
     volumes:
       # Montar código para hot reload (desenvolvimento)
       - ./backend:/app
-    # Gera os dados antes de iniciar o servidor (necessário pois o volume sobrescreve o build)
-    command: sh -c "python data_generator.py && uvicorn main:app --host 0.0.0.0 --port 8000"
+    # Inicia o servidor (o CSV C6 já deve estar presente na pasta backend)
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
