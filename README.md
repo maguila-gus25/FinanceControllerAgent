@@ -11,6 +11,8 @@ O **CFO Agent** resolve esse problema ao fornecer um assistente de IA especializ
 - Identifica padrões e tendências nos gastos
 - Fornece insights para aumentar sua taxa de poupança
 - Diferencia transferências pessoais de pagamentos a empresas
+- **Dashboard interativo** com gráficos e visualizações por mês
+- **Exportação de dados** para Excel (.xls) para análise externa
 
 ## 🛠 Stack Utilizada
 
@@ -28,6 +30,8 @@ O **CFO Agent** resolve esse problema ao fornecer um assistente de IA especializ
 - **Tailwind CSS**: Estilização utilitária e design moderno
 - **Vercel AI SDK**: Integração com streaming de respostas de IA
 - **React Hooks**: Gerenciamento de estado e efeitos
+- **Recharts**: Biblioteca de gráficos para visualizações financeiras
+- **XLSX**: Exportação de dados para Excel (.xls)
 
 ### Arquitetura
 - **DDD Lite**: Separação de responsabilidades (Domain/Application/Infrastructure)
@@ -62,6 +66,15 @@ Interface moderna e intuitiva que permite:
 - Respostas em tempo real (streaming)
 - Visualização de saldo e métricas principais
 - Histórico de conversas
+
+### 5. **Dashboard Visual Completo**
+Dashboard interativo com:
+- **Gráficos de pizza**: Distribuição de gastos por categoria
+- **Gráficos de barras**: Evolução de entradas, saídas e saldo por mês
+- **Gráficos comparativos**: Gastos por categoria ao longo do tempo
+- **Tabelas detalhadas**: Lista completa de gastos por categoria com percentuais
+- **Exportação Excel**: Download de dados em formato .xls para análise externa
+- **Seletor de mês**: Análise específica por período
 
 ## 📦 Instalação e Configuração
 
@@ -166,6 +179,32 @@ npm run dev
 
 A aplicação estará disponível em `http://localhost:3000`
 
+## 📊 Dashboard Financeiro
+
+O Dashboard oferece uma visão completa e visual das suas finanças:
+
+### Funcionalidades do Dashboard
+
+1. **Visualização por Mês**
+   - Selecione qualquer mês para análise detalhada
+   - Cards de resumo: entradas, saídas, saldo e taxa de poupança
+
+2. **Gráficos Interativos**
+   - **Gráfico de Pizza**: Distribuição percentual de gastos por categoria no mês selecionado
+   - **Gráfico de Barras Mensal**: Evolução de entradas, saídas e saldo ao longo dos meses
+   - **Gráfico de Categorias**: Comparação de gastos por categoria ao longo do tempo (top 10)
+
+3. **Tabela Detalhada**
+   - Lista completa de categorias com valores e percentuais
+   - Ordenação automática por valor (maior para menor)
+   - **Exportação para Excel**: Baixe os dados em formato .xls com um clique
+
+### Acessando o Dashboard
+
+- Navegue para `/dashboard` ou clique em "📊 Dashboard" na sidebar
+- Use o seletor de mês para analisar períodos específicos
+- Clique em "Exportar para Excel (.xls)" na tabela para baixar os dados
+
 ## 💡 Exemplos de Uso
 
 ### Perguntas que o agente pode responder:
@@ -215,11 +254,18 @@ FinanceControllerAgent/
 │   ├── app/
 │   │   ├── api/
 │   │   │   ├── chat/route.ts        # API route para chat
-│   │   │   └── balance/route.ts     # API route para saldo
-│   │   ├── page.tsx                 # Interface principal
+│   │   │   ├── balance/route.ts     # API route para saldo
+│   │   │   └── monthly-summary/route.ts  # API route para dados mensais
+│   │   ├── dashboard/
+│   │   │   └── page.tsx             # Página do Dashboard
+│   │   ├── page.tsx                 # Interface principal (Chat)
 │   │   └── layout.tsx               # Layout base
 │   ├── components/
-│   │   └── Sidebar.tsx              # Dashboard lateral
+│   │   ├── Sidebar.tsx              # Dashboard lateral com navegação
+│   │   ├── CategoryPieChart.tsx    # Gráfico de pizza por categoria
+│   │   ├── ExpensesByMonthChart.tsx # Gráfico de barras mensal
+│   │   ├── MonthlyExpensesChart.tsx  # Gráfico de categorias ao longo do tempo
+│   │   └── ExpensesTable.tsx        # Tabela com exportação Excel
 │   └── package.json
 ├── docker-compose.yml               # Orquestração de containers
 └── README.md
@@ -275,10 +321,11 @@ Acesse:
 
 Este é o MVP do CFO Agent. Futuras melhorias podem incluir:
 - Suporte a extratos de outros bancos (Nubank, Itaú, etc.)
-- Dashboard com gráficos e visualizações
-- Metas de economia e alertas
+- Metas de economia e alertas personalizados
 - Previsão de gastos usando ML
 - Exportação de relatórios em PDF
+- Filtros avançados no dashboard (por categoria, período, valor)
+- Comparação entre períodos (mês a mês, ano a ano)
 - App mobile
 
 ## 📝 Licença

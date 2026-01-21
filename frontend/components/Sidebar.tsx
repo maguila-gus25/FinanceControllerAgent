@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 interface BalanceData {
   saldo_total: number
@@ -12,6 +14,7 @@ export default function Sidebar() {
   const [balance, setBalance] = useState<BalanceData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -43,7 +46,33 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 bg-gray-800 border-r border-gray-700 p-6 flex flex-col">
-      <h2 className="text-xl font-bold mb-6 text-gray-200">Dashboard Financeiro</h2>
+      <h2 className="text-xl font-bold mb-6 text-gray-200">CFO Agent</h2>
+      
+      {/* Navigation */}
+      <nav className="mb-6 space-y-2">
+        <Link
+          href="/"
+          className={`block px-4 py-2 rounded-lg transition-colors ${
+            pathname === '/'
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-300 hover:bg-gray-700'
+          }`}
+        >
+          💬 Chat
+        </Link>
+        <Link
+          href="/dashboard"
+          className={`block px-4 py-2 rounded-lg transition-colors ${
+            pathname === '/dashboard'
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-300 hover:bg-gray-700'
+          }`}
+        >
+          📊 Dashboard
+        </Link>
+      </nav>
+      
+      <h3 className="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-wider">Resumo</h3>
       
       <div className="space-y-4">
         <div className="bg-gray-700 rounded-lg p-4">
