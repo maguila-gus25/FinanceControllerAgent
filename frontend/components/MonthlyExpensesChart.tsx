@@ -15,16 +15,17 @@ interface MonthlyExpensesChartProps {
   data: MonthlyData[]
 }
 
+// Premium color palette
 const COLORS = [
-  '#3B82F6', // blue
-  '#10B981', // green
-  '#F59E0B', // amber
-  '#EF4444', // red
-  '#8B5CF6', // purple
-  '#EC4899', // pink
   '#06B6D4', // cyan
-  '#F97316', // orange
+  '#10B981', // emerald
+  '#EC4899', // rose
+  '#8B5CF6', // violet
+  '#F59E0B', // amber
+  '#3B82F6', // blue
+  '#EF4444', // red
   '#84CC16', // lime
+  '#F97316', // orange
   '#6366F1', // indigo
 ]
 
@@ -62,7 +63,7 @@ export default function MonthlyExpensesChart({ data }: MonthlyExpensesChartProps
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64 text-slate-400">
         <p>Nenhum dado disponível</p>
       </div>
     )
@@ -72,31 +73,46 @@ export default function MonthlyExpensesChart({ data }: MonthlyExpensesChartProps
     return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
   }
 
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="glass-card rounded-lg p-4 border border-slate-700/50 shadow-xl">
+          <p className="text-label text-slate-400 mb-2 font-semibold">{label}</p>
+          {payload
+            .filter((entry: any) => entry.value > 0)
+            .map((entry: any, index: number) => (
+              <p key={index} className="text-sm mb-1" style={{ color: entry.color }}>
+                <span className="font-medium">{entry.name}:</span>{' '}
+                <span className="text-slate-100">{formatValue(entry.value)}</span>
+              </p>
+            ))}
+        </div>
+      )
+    }
+    return null
+  }
+
   return (
     <ResponsiveContainer width="100%" height={500}>
-      <BarChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+      <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />
         <XAxis 
           dataKey="mes" 
-          stroke="#9CA3AF"
+          stroke="#94a3b8"
           style={{ fontSize: '12px' }}
+          tick={{ fill: '#cbd5e1' }}
         />
         <YAxis 
-          stroke="#9CA3AF"
+          stroke="#94a3b8"
           style={{ fontSize: '12px' }}
+          tick={{ fill: '#cbd5e1' }}
           tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
         />
-        <Tooltip 
-          formatter={(value: number) => formatValue(value)}
-          contentStyle={{ 
-            backgroundColor: '#1F2937', 
-            border: '1px solid #374151',
-            borderRadius: '8px',
-            color: '#F3F4F6'
-          }}
-        />
+        <Tooltip content={<CustomTooltip />} />
         <Legend 
           wrapperStyle={{ paddingTop: '20px' }}
+          formatter={(value) => <span className="text-slate-300 text-sm">{value}</span>}
+          iconType="square"
         />
         {topCategories.map((category, index) => (
           <Bar 
@@ -104,6 +120,7 @@ export default function MonthlyExpensesChart({ data }: MonthlyExpensesChartProps
             dataKey={category} 
             fill={COLORS[index % COLORS.length]}
             radius={[8, 8, 0, 0]}
+            style={{ filter: `drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2))` }}
           />
         ))}
       </BarChart>

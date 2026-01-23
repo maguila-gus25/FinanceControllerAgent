@@ -1,6 +1,8 @@
 'use client'
 
 import { useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { Download } from 'lucide-react'
 import * as XLSX from 'xlsx'
 
 interface ExpensesTableProps {
@@ -69,7 +71,7 @@ export default function ExpensesTable({ data, month }: ExpensesTableProps) {
 
   if (tableData.length === 0) {
     return (
-      <div className="text-center text-gray-400 py-8">
+      <div className="text-center text-slate-400 py-8">
         <p>Nenhum gasto registrado neste mês</p>
       </div>
     )
@@ -77,60 +79,53 @@ export default function ExpensesTable({ data, month }: ExpensesTableProps) {
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
-        <button
+      <div className="mb-6 flex justify-end">
+        <motion.button
           onClick={exportToExcel}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="glass-card border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold px-5 py-3 rounded-xl transition-all flex items-center gap-2"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
+          <Download className="w-5 h-5" />
           Exportar para Excel (.xls)
-        </button>
+        </motion.button>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg border border-slate-700/50">
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b border-gray-700">
-              <th className="px-4 py-3 text-gray-300 font-semibold">Categoria</th>
-              <th className="px-4 py-3 text-gray-300 font-semibold text-right">Valor (R$)</th>
-              <th className="px-4 py-3 text-gray-300 font-semibold text-right">Percentual (%)</th>
+            <tr className="border-b border-slate-700/50 bg-slate-800/50">
+              <th className="px-5 py-4 text-label text-slate-300 font-semibold">Categoria</th>
+              <th className="px-5 py-4 text-label text-slate-300 font-semibold text-right">Valor (R$)</th>
+              <th className="px-5 py-4 text-label text-slate-300 font-semibold text-right">Percentual (%)</th>
             </tr>
           </thead>
           <tbody>
             {tableData.map((item, index) => (
-              <tr
+              <motion.tr
                 key={item.categoria}
-                className={`border-b border-gray-700 hover:bg-gray-700/50 ${
-                  index % 2 === 0 ? 'bg-gray-800/50' : ''
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.03 }}
+                className={`border-b border-slate-700/30 hover:bg-slate-800/50 transition-colors ${
+                  index % 2 === 0 ? 'bg-slate-900/30' : ''
                 }`}
               >
-                <td className="px-4 py-3 text-gray-200">{item.categoria}</td>
-                <td className="px-4 py-3 text-gray-200 text-right font-medium">
+                <td className="px-5 py-4 text-slate-200">{item.categoria}</td>
+                <td className="px-5 py-4 text-executive text-slate-100 text-right">
                   R$ {item.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </td>
-                <td className="px-4 py-3 text-gray-400 text-right">
+                <td className="px-5 py-4 text-slate-400 text-right">
                   {item.percentual.toFixed(2)}%
                 </td>
-              </tr>
+              </motion.tr>
             ))}
-            <tr className="border-t-2 border-gray-600 bg-gray-700/30 font-bold">
-              <td className="px-4 py-3 text-gray-200">TOTAL</td>
-              <td className="px-4 py-3 text-gray-200 text-right">
+            <tr className="border-t-2 border-slate-600 bg-slate-800/70 font-bold">
+              <td className="px-5 py-4 text-executive text-slate-100">TOTAL</td>
+              <td className="px-5 py-4 text-executive text-cyan-400 text-right">
                 R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </td>
-              <td className="px-4 py-3 text-gray-200 text-right">100.00%</td>
+              <td className="px-5 py-4 text-executive text-slate-100 text-right">100.00%</td>
             </tr>
           </tbody>
         </table>
