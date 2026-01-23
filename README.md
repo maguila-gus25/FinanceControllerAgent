@@ -328,10 +328,6 @@ Este é o MVP do CFO Agent. Futuras melhorias podem incluir:
 - Comparação entre períodos (mês a mês, ano a ano)
 - App mobile
 
-## 📝 Licença
-
-MIT License - Sinta-se livre para usar e modificar.
-
 ---
 
 **Desenvolvido para ajudar você a construir riqueza e ter controle total das suas finanças.**
