@@ -1,3 +1,4 @@
+
 # 🚀 Guia de Instalação - CFO Agent
 
 ## 🐳 Usando Docker (Recomendado)
@@ -121,6 +122,6 @@ Faça perguntas como:
 | "GROQ_API_KEY não configurada" | Verifique o arquivo `.env` na raiz do projeto |
 | Chat não responde | Verifique os logs com `docker-compose logs -f` |
 | Erro 500 no backend | Verifique se a API key do Groq é válida |
-
+---
 
 **Pronto! Agora você pode usar o CFO Agent! 🎉**
